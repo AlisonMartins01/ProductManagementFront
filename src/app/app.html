@@ -1,0 +1,9 @@
+<mat-toolbar color="primary">
+  <span routerLink="/products" class="app-title">Gestão de Produtos</span>
+</mat-toolbar>
+
+@if (loading$ | async) {
+  <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+}
+
+<router-outlet></router-outlet>
