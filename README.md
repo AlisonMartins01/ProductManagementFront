@@ -48,28 +48,6 @@ docker build -t product-management-front .
 docker run -p 4200:80 product-management-front
 ```
 
-### Frontend + Backend juntos
-
-```bash
-docker-compose up --build
-```
-
-> No `docker-compose.yml`, o serviço `backend` usa `image: product-management-api`. Certifique-se de que a imagem do backend foi gerada antes de subir o compose.
-
-## Build de produção
-
-```bash
-ng build --configuration=production
-```
-
-Os artefatos serão gerados em `dist/product-management/browser`.
-
-## Testes
-
-```bash
-ng test
-```
-
 ## Estrutura do projeto
 
 ```
@@ -96,9 +74,3 @@ src/app/
 - **Erros do backend mapeados para o form** — erros de validação 400 são exibidos diretamente nos campos correspondentes
 - **RxJS `combineLatest` + `switchMap`** — garante que mudança de página ou filtro cancela a requisição anterior
 
-## O que faria diferente com mais tempo
-
-- Testes unitários com maior cobertura (service, components, guards)
-- Variável de ambiente para a URL da API configurável via Docker (sem rebuild)
-- Feedback visual de estoque baixo mais elaborado (badge, alerta)
-- Autenticação com JWT e refresh token
