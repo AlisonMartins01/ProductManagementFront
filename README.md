@@ -1,59 +1,104 @@
-# ProductManagement
+# Gestão de Produtos — Frontend
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.0.4.
+Aplicação Angular para gerenciamento de produtos, desenvolvida como parte de um desafio técnico Sênior Full Stack (.NET + Angular).
 
-## Development server
+## Tecnologias
 
-To start a local development server, run:
+- Angular 20 (Standalone Components)
+- Angular Material 20 (Material 3)
+- Reactive Forms + RxJS
+- TypeScript
+- Docker + Nginx
+
+## Funcionalidades
+
+- Listagem de produtos com paginação e filtro por nome
+- Criação e edição de produtos com formulários reativos e validações
+- Exclusão com confirmação via dialog
+- Tratamento global de erros HTTP (400, 404, 500)
+- Indicador de loading automático em todas as requisições
+- Guard para evitar saída de formulário com alterações não salvas
+- Locale PT-BR (moeda, formatação)
+
+## Pré-requisitos
+
+- Node.js 22+
+- Angular CLI 20+
+
+## Como rodar localmente
 
 ```bash
+# Instalar dependências
+npm install
+
+# Iniciar servidor de desenvolvimento
 ng serve
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+Acesse `http://localhost:4200`. A aplicação recarrega automaticamente a cada alteração.
 
-## Code scaffolding
+> O backend deve estar rodando em `http://localhost:8080`. Para alterar a URL base, edite `src/environments/environment.ts`.
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+## Como rodar com Docker
 
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+### Apenas o frontend
 
 ```bash
-ng generate --help
+docker build -t product-management-front .
+docker run -p 4200:80 product-management-front
 ```
 
-## Building
-
-To build the project run:
+### Frontend + Backend juntos
 
 ```bash
-ng build
+docker-compose up --build
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+> No `docker-compose.yml`, o serviço `backend` usa `image: product-management-api`. Certifique-se de que a imagem do backend foi gerada antes de subir o compose.
 
-## Running unit tests
+## Build de produção
 
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+```bash
+ng build --configuration=production
+```
+
+Os artefatos serão gerados em `dist/product-management/browser`.
+
+## Testes
 
 ```bash
 ng test
 ```
 
-## Running end-to-end tests
+## Estrutura do projeto
 
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
+```
+src/app/
+├── core/
+│   ├── interceptors/       # HTTP error + loading interceptors
+│   ├── services/           # LoadingService
+│   └── guards/             # UnsavedChangesGuard
+├── shared/
+│   └── components/         # ConfirmDialogComponent
+├── models/                 # Interfaces TypeScript
+└── features/
+    └── products/
+        ├── product.service.ts
+        ├── product-list/
+        └── product-form/
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+## Decisões técnicas
 
-## Additional Resources
+- **Standalone Components** — padrão do Angular 20, sem NgModules
+- **Lazy loading** — cada rota carrega seu bundle sob demanda
+- **Interceptors funcionais** — registrados via `withInterceptors`, sem necessidade de classes
+- **Erros do backend mapeados para o form** — erros de validação 400 são exibidos diretamente nos campos correspondentes
+- **RxJS `combineLatest` + `switchMap`** — garante que mudança de página ou filtro cancela a requisição anterior
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+## O que faria diferente com mais tempo
+
+- Testes unitários com maior cobertura (service, components, guards)
+- Variável de ambiente para a URL da API configurável via Docker (sem rebuild)
+- Feedback visual de estoque baixo mais elaborado (badge, alerta)
+- Autenticação com JWT e refresh token
